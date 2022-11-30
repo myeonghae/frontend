@@ -2,6 +2,8 @@
 # 컴퓨터정보과 3학년 B반
 # 학번 : 201644038
 # 이름 : 간명해
+# 개발언어 : Flutter
+# 개발환경 : Ubuntu
 
 URL : https://inhatc.attustudio.com/
 
