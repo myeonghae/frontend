@@ -16,6 +16,7 @@ class Page_1 extends StatefulWidget {
   Page_1({Key? key, required this.grade}) : super(key: key);
   int grade;
 
+
   @override
   State<Page_1> createState() => _Page_1State(grade: grade);
 }
@@ -23,7 +24,7 @@ class Page_1 extends StatefulWidget {
 class _Page_1State extends State<Page_1> {
 
   _Page_1State({required this.grade});
-
+  int count = 0;
   int grade;
   late Page_1_Provider _page_1_provider;
   bool isReady = false;
@@ -32,14 +33,51 @@ class _Page_1State extends State<Page_1> {
   bool isSave = false;
   late App_Http_Controller http_Controller;
 
-  void deleteWidget(int grade, int id){
+  Future<void> chanageData(bool save, String json, String id, int num) async {
+    if(save){
+      await _page_1_provider.updateData(int.parse(id), json);
+    }
 
     setState(() {
-      _page_1_provider.deleteData(grade, id);
-      isAdded = false;
+      count = count + num;
+
+     if(count == 0){
+       isSave = false;
+     }
+     else{
+       isSave = true;
+     }
 
     });
 
+  }
+
+  Future<void> deleteWidget(int grade, int id, bool realData) async {
+
+    if(realData){
+      await http_Controller.Page_1_Http_Delete(id.toString());
+      await Future.delayed(const Duration(milliseconds: 1500));
+      setData();
+    }
+    else{
+      _page_1_provider.deleteData(grade, id);
+    }
+
+    setState(() {
+      isAdded = false;
+      setLayoutState();
+    });
+  }
+
+  Future<void> addWidget() async {
+    setState(() {
+      isReady = false;
+    });
+    await _page_1_provider.loadPage1Data();
+    setState(() {
+      isReady = true;
+      isAdded = false;
+    });
   }
 
   @override
@@ -72,7 +110,7 @@ class _Page_1State extends State<Page_1> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(32),
+        margin: const EdgeInsets.only(left: 32, right: 8, top: 32, bottom: 32),
         child: isReady ?
         Column(
           mainAxisSize: MainAxisSize.max,
@@ -85,44 +123,40 @@ class _Page_1State extends State<Page_1> {
     );
   }
 
-  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController1 = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController2 = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController3 = RoundedLoadingButtonController();
+  bool isupdateing = false;
+  void _doSomething1() async {
 
-  void _doSomething() async {
+    _btnController1.reset();
+    _btnController2.reset();
+    _btnController3.reset();
 
-    if(isAdded == false){
-      _btnController.reset();
-      return;
-    }
-
-    String string = await http_Controller.Page_1_Http_Insert(
-      "1",
-      "credit",
-      "required",
-      "subject",
-      "unit",
-      "attendance",
-      "assignment",
-      "middle_term",
-      "final_exam"
-    );
-
-    
-    if(string == "true"){
-      justWait(numberOfmilliseconds: 1000);
-      await _page_1_provider.loadPage1Data();
-    }
-
-    _btnController.success();
-    await justWait(numberOfmilliseconds: 1000);
-    _btnController.reset();
     setState(() {
-      dataChange = true;
+      isSave = true;
     });
-    await justWait(numberOfmilliseconds: 200);
+
+  }
+
+  void _doSomething2() async {
+
+    _btnController1.reset();
+    _btnController2.reset();
+    _btnController3.reset();
+
     setState(() {
-      isAdded = false;
-      dataChange = false;
+      isSave = false;
     });
+  }
+
+  void _doSomething3() async {
+    _btnController1.reset();
+    _btnController2.reset();
+    setState(() {
+    isupdateing = false;
+    });
+
   }
 
   Widget makeView(int grade) {
@@ -143,25 +177,66 @@ class _Page_1State extends State<Page_1> {
           children: [
             Text("$grade학년", style: font_medium(20, Colors.black),),
 
-            isAdded ? Container(
-              margin: const EdgeInsets.only(right: 36),
-              child: RoundedLoadingButton(
-                  controller: _btnController,
-                  onPressed: _doSomething,
-                  color: pointColor,
-                  width: 100,
-                  height: 40,
-                  successColor: primaryColor,
-                  loaderSize: 16,
-                  loaderStrokeWidth: 1,
-                  valueColor: Colors.white,
-                  borderRadius: 6,
-                  elevation: 6,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 2),
-                    child: Text("저 장", style: font_bold(13, Colors.white),),),
-              ),
-            ) : const SizedBox.shrink()
+            // !isSave ? Container(
+            //   margin: const EdgeInsets.only(right: 36),
+            //   child: RoundedLoadingButton(
+            //       controller: _btnController1,
+            //       onPressed: _doSomething1,
+            //       color: pointColor,
+            //       width: 100,
+            //       height: 40,
+            //       successColor: primaryColor,
+            //       loaderSize: 16,
+            //       loaderStrokeWidth: 1,
+            //       valueColor: Colors.white,
+            //       borderRadius: 6,
+            //       elevation: 6,
+            //       child: Container(
+            //         margin: const EdgeInsets.only(bottom: 2),
+            //         child: Text("수 정", style: font_bold(13, Colors.white),),),
+            //   ),
+            // ) : Row(
+            //   children: [
+            //     !isupdateing ? Container(
+            //       margin: const EdgeInsets.only(right: 8),
+            //       child: RoundedLoadingButton(
+            //         controller: _btnController2,
+            //         onPressed: _doSomething2,
+            //         color: cancelColor,
+            //         width: 100,
+            //         height: 40,
+            //         successColor: primaryColor,
+            //         loaderSize: 16,
+            //         loaderStrokeWidth: 1,
+            //         valueColor: Colors.white,
+            //         borderRadius: 6,
+            //         elevation: 6,
+            //         child: Container(
+            //           margin: const EdgeInsets.only(bottom: 2),
+            //           child: Text("취 소", style: font_bold(13, Colors.white),),),
+            //       ),
+            //     ) : SizedBox.shrink(),
+            //     Container(
+            //       margin: const EdgeInsets.only(right: 36),
+            //       child: RoundedLoadingButton(
+            //         controller: _btnController3,
+            //         onPressed: _doSomething3,
+            //         color: pointColor,
+            //         width: 100,
+            //         height: 40,
+            //         successColor: primaryColor,
+            //         loaderSize: 16,
+            //         loaderStrokeWidth: 1,
+            //         valueColor: Colors.white,
+            //         borderRadius: 6,
+            //         elevation: 6,
+            //         child: Container(
+            //           margin: const EdgeInsets.only(bottom: 2),
+            //           child: Text("저 장", style: font_bold(13, Colors.white),),),
+            //       ),
+            //     )
+            //   ],
+            // )
           ],
         ),
         const SizedBox(height: 8,),
@@ -191,49 +266,51 @@ class _Page_1State extends State<Page_1> {
                     .final_exam.toString(),
                 deleteWidget: deleteWidget,
                   isSave: isSave,
-                  isAdded: isAdded
+                  isAdded: isAdded,
+                  setLayoutState: addWidget,
+                  changeWidget : chanageData
               )).toList(),
         ),
 
         const SizedBox(height: 4,),
 
-        !isAdded ? GridBottom(list: _page_1_provider.page1List,) : const SizedBox.shrink(),
+        list.length == 0 ? const SizedBox.shrink() : isAdded ? const SizedBox.shrink() : isSave ? const SizedBox.shrink() : GridBottom(list: list,),
 
         const SizedBox(height: 6,),
 
-        !isAdded ? Card(
-          margin: const EdgeInsets.only(left: 0, top: 0, bottom: 0, right: 36),
-          borderOnForeground: false,
-          shadowColor: primaryColor,
-          elevation: 4,
-          child: InkWell(
-            child: Container(
-              color: Colors.transparent,
-              width: double.infinity,
-              height: 34,
-              child: const Center(
-                child: Icon(
-                  Icons.add_circle_outline,
-                  size: 24,
-                  color: Colors.black45,
+        isAdded ? const SizedBox.shrink() : isSave ? const SizedBox.shrink() : Card(
+            margin: const EdgeInsets.only(left: 0, top: 0, bottom: 0, right: 60),
+            borderOnForeground: false,
+            shadowColor: primaryColor,
+            elevation: 4,
+            child: InkWell(
+              child: Container(
+                color: Colors.transparent,
+                width: double.infinity,
+                height: 34,
+                child: const Center(
+                  child: Icon(
+                    Icons.add_circle_outline,
+                    size: 24,
+                    color: Colors.black45,
+                  ),
                 ),
               ),
-            ),
-            onTap: (){
+              onTap: (){
 
-              if(isAdded == true){
-                return;
-              }
+                if(isAdded == true){
+                  return;
+                }
 
-              setState(() {
-                isAdded = true;
-                _page_1_provider.addNewData(grade);
-                setLayoutState();
-              });
+                setState(() {
+                  isAdded = true;
+                  _page_1_provider.addNewData(grade);
+                  setLayoutState();
+                });
 
-            },
-          )
-        ) : const SizedBox.shrink()
+              },
+            )
+        )
 
 
       ],

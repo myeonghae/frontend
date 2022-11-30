@@ -32,8 +32,8 @@ class App_Http_Controller{
       String unit,
       String attendance,
       String assignment,
-      String middle_term,
-      String final_exam,
+      String middleTerm,
+      String finalExam,
       ) async {
     String result = "false";
     try {
@@ -48,8 +48,72 @@ class App_Http_Controller{
             'unit': unit,
             'attendance': attendance,
             'assignment': assignment,
-            'middle_term': middle_term,
-            'final_exam': final_exam,
+            'middle_term': middleTerm,
+            'final_exam': finalExam,
+          });
+      if (response.statusCode == 200) {
+        result = response.body.toString();
+      }
+    }
+    catch (e) {
+      result = "internet";
+      print(e);
+    }
+
+    return result;
+  }
+
+  Future<String> Page_1_Http_Delete(
+      String id,
+      ) async {
+    String result = "false";
+    try {
+
+      final uri = Uri.parse("${mainServer}delete_final_result.php");
+      var response = await http.post(uri,
+          body: <String, String> {
+            'id': id,
+          });
+      if (response.statusCode == 200) {
+        result = response.body.toString();
+      }
+    }
+    catch (e) {
+      result = "internet";
+      print(e);
+    }
+
+    return result;
+  }
+
+  Future<String> Page_1_Http_Update(
+      String id,
+      String grade,
+      String credit,
+      String required,
+      String subject,
+      String unit,
+      String attendance,
+      String assignment,
+      String middleTerm,
+      String finalExam,
+      ) async {
+    String result = "false";
+    try {
+
+      final uri = Uri.parse("${mainServer}update_final_result.php");
+      var response = await http.post(uri,
+          body: <String, String> {
+            'id': id,
+            'grade': grade,
+            'credit': credit,
+            'required': required,
+            'subject': subject,
+            'unit': unit,
+            'attendance': attendance,
+            'assignment': assignment,
+            'middle_term': middleTerm,
+            'final_exam': finalExam,
           });
       if (response.statusCode == 200) {
         result = response.body.toString();

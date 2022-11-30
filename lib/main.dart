@@ -42,7 +42,21 @@ class MainActivity extends StatefulWidget {
   State<MainActivity> createState() => _MainActivityState();
 }
 
-class _MainActivityState extends State<MainActivity> {
+class _MainActivityState extends State<MainActivity> with TickerProviderStateMixin{
+
+
+  int index = 0;
+
+  @override
+  void initState() {
+    _tabController = TabController(
+      length: 4,
+      vsync: this,  //vsync에 this 형태로 전달해야 애니메이션이 정상 처리됨
+    );
+    super.initState();
+  }
+
+  late TabController _tabController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +71,85 @@ class _MainActivityState extends State<MainActivity> {
           _showDioalog(context);
         }),
       ),
-      body: Layout(contents: Page_1(grade: 1,),),
+      body: Layout(contents:
+      Column(
+        children: [
+          Container(
+
+            child: TabBar(
+              tabs: [
+                Container(
+                  height: 48,
+                  alignment: Alignment.center,
+                  child: Text(
+                    '전체',style: font_medium(14, Colors.black)
+                  ),
+                ),
+                Container(
+                  height: 48,
+                  alignment: Alignment.center,
+                  child: Text(
+                    '1학년',style: font_medium(14, Colors.black)
+                  ),
+                ),
+                Container(
+                  height: 48,
+                  alignment: Alignment.center,
+                  child: Text(
+                    '2학년',style: font_medium(14, Colors.black)
+                  ),
+                ),
+                Container(
+                  height: 48,
+                  alignment: Alignment.center,
+                  child: Text(
+                    '3학년',style: font_medium(14, Colors.black)
+                  ),
+                ),
+              ],
+              indicator: const BoxDecoration(
+                color: primaryColor
+              ),
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.black,
+              controller: _tabController,
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                SingleChildScrollView(
+                  child: Column(children: [
+                    Page_1(grade: 1),
+                    Page_1(grade: 2),
+                    Page_1(grade: 3),
+                  ],),
+                ),
+                SingleChildScrollView(
+                    child: Column(children: [
+                      Page_1(grade: 1),
+                    ],)
+                ),
+
+                SingleChildScrollView(
+                    child: Column(children: [
+                      Page_1(grade: 2),
+                    ],)
+                ),
+
+                SingleChildScrollView(
+                    child: Column(children: [
+                      Page_1(grade: 3),
+                    ],)
+                ),
+
+              ],
+            ),
+          ),
+        ],
+      ),
+      )
     );
   }
 

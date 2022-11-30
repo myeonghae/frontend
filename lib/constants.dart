@@ -5,6 +5,7 @@ const secondaryColor = Color(0xFFc4dcd5);
 const thirdColor = Color(0xFFdae9e6);
 const pointColor = Color(0xFFb6abab);
 const grayColor = Color(0xFFeeeeee);
+const cancelColor = Color(0xFFb6abbb);
 Color shadowColor = Color(0xFFDADFF0);
 const defaultPadding = 16.0;
 

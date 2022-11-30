@@ -60,11 +60,22 @@ class Page_1_Provider extends ChangeNotifier{
   addNewData(int grade) {
     int num = 51754567;
     var string =
-    '{"id":"${num}","grade":"${grade}","credit":null,"required":null,"subject":null,"unit":null,"attendance":null,"assignment":null,"middle_term":null,"final_exam":null}';
+    '{"id":"${num}","grade":"${grade}","credit":"-","required":"-","subject":null,"unit":null,"attendance":null,"assignment":null,"middle_term":null,"final_exam":null}';
 
     _page1.add(Page_1_Controller.fromJson( json.decode(string)));
     notifyListeners();
 
+  }
+
+  updateData(int id, String string){
+
+    for(int i = 0; i < _page1.length; i++){
+      if(_page1[i].id == id.toString()){
+        _page1[i] = Page_1_Controller.fromJson( json.decode(string));
+        break;
+      }
+    }
+    notifyListeners();
   }
 
   deleteData(int grade, int id){

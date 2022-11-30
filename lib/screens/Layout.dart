@@ -21,47 +21,26 @@ class _LayoutState extends State<Layout> {
     return SizedBox(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      child: Center(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Scrollbar(
-              isAlwaysShown: true, //always show scrollbar
-              thickness: 10, //width of scrollbar
-              radius: const Radius.circular(10), //corner radius of scrollbar
-              scrollbarOrientation: ScrollbarOrientation.right, //which side to show scrollbar
-              controller: scollBarController,
-              child:
-              SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child:
-                  Scrollbar(
-                    isAlwaysShown: true, //always show scrollbar
-                    thickness: 10, //width of scrollbar
-                    radius: const Radius.circular(10), //corner radius of scrollbar
-                    scrollbarOrientation: ScrollbarOrientation.bottom, //which side to show scrollbar
-                    controller: scollBarController,
-                    child:
-                    SingleChildScrollView(
-                      controller: scollBarController,
-                      scrollDirection: Axis.horizontal,
-                      child:
-                      Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width > 1600 ? 1600 : MediaQuery.of(context).size.width < 980 ? 980 : MediaQuery.of(context).size.width,
-                              child: contents
-                          ),
-
-                        ],
-                      ),
-                    ),
-                  )
-
-              ),
+      child: Scrollbar(
+        isAlwaysShown: true, //always show scrollbar
+        thickness: 10, //width of scrollbar
+        radius: const Radius.circular(10), //corner radius of scrollbar
+        scrollbarOrientation: ScrollbarOrientation.bottom, //which side to show scrollbar
+        controller: scollBarController,
+        child:
+        SingleChildScrollView(
+          controller: scollBarController,
+          scrollDirection: Axis.horizontal,
+          child:
+          Center(
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width < 980 ? 980 : MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: contents
             ),
-          )),
+          )
+        ),
+      ),
     );
   }
 }
